@@ -1,9 +1,10 @@
 from PIL import Image, ImageEnhance
-import qrtools
+#from qrtools import qrtools
+from pyzbar.pyzbar import decode
 from picamera import PiCamera
 
 
-class Processor(object):
+class Processor:
     """
     Image capture and QR processing
     """
@@ -19,7 +20,7 @@ class Processor(object):
         self.cam.resolution = (1024, 768)
 
         # QR decoder
-        self.qr = qrtools.QR()
+        #self.qr = qrtools.QR()
 
         self.out_file = out_file
 
@@ -48,7 +49,11 @@ class Processor(object):
         img = img.crop((300, 200, 700, 600))
         img = ImageEnhance.Contrast(img).enhance(self.contrast)
         img = ImageEnhance.Sharpness(img).enhance(self.sharpness)
-        img.save(self.out_file)
-
-        return self.qr.decode(self.out_file)
+        #img.save(self.out_file)
+        self.qr = decode(img)
+        if self.qr:
+            self.qr = self.qr[0]
+        else:
+            self.qr = None
+        return self.qr
 

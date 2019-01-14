@@ -47,27 +47,27 @@ while True:
 
     if qr_found:
         # process event, catch any error
-
-        print "QR code found, data is " + proc.qr.data
+        data = proc.qr.data.decode('utf-8')
+        print("QR code found, data is " + data)
 
         try:
 
-            words = proc.qr.data.split()
+            words = data.split()
 
             if len(words) == 0:
-                print "No data found"
+                print("No data found")
                 continue
 
             if words[0] == "music":
 
                 if len(words) < 2:
-                    print "Found class 'music' but no command"
+                    print("Found class 'music' but no command")
                     continue
 
                 if words[1] == "vol":
 
                     if len(words) < 3:
-                        print "Found command 'music vol' but no value"
+                        print("Found command 'music vol' but no value")
                         continue
 
                     # get volume value
@@ -77,35 +77,35 @@ while True:
                     if value == current_volume:
                         continue
 
-                    print "Setting volume to :" + str(value)
+                    print("Setting volume to :" + str(value))
                     current_volume = value
                     util.set_volume(value)
                         
                 elif words[1] == "play":
 
                     if len(words) < 3:
-                        print "Found command 'music vol' but no value"
+                        print("Found command 'music play' but no value")
                         continue
 
                     # file name may contain spaces, re-assemble it
                     music_file = path.join(settings.MUSIC_ROOT, " ".join(words[2:]))
 
                     if not path.exists(music_file):
-                        print "File not found: " + music_file
+                        print("File not found: " + music_file)
 
                     # if playing the file already, do nothing
                     if pygame.mixer.music.get_busy() and current_music == music_file:
                         continue
 
                     # play
-                    print "Playing " + music_file
+                    print("Playing " + music_file)
                     current_music = music_file
                     pygame.mixer.music.load(music_file)
                     pygame.mixer.music.play()
 
-        except Exception, e:
-            print ""
-            print "Exception: " + str(e)
-            print "Command was: " + str(e)
+        except Exception as e:
+            print("")
+            print("Exception: " + str(e))
+            print("Command was: " + str(e))
             continue
             
